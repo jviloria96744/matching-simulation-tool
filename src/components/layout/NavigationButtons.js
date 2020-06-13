@@ -19,7 +19,7 @@ const NavigationButtons = () => {
   return (
     <Fragment>
       <Link to="/">
-        <HomeIcon color="error" fontSize="Large" />
+        <HomeIcon color="error" fontSize="large" />
       </Link>
       <Button color="inherit" onClick={handleClick}>
         Matching Problems
