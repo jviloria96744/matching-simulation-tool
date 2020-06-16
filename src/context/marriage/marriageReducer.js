@@ -4,6 +4,8 @@ import {
   CREATE_PROPOSALS,
   ACCEPT_PROPOSALS,
   RESET_MARKET,
+  SET_AVATAR_CLASS,
+  CLEAR_AVATAR_CLASS,
 } from "../types";
 import { getRandomNames } from "../../utils/randomNames";
 
@@ -51,6 +53,31 @@ export default (state, action) => {
         ...state,
         marriageMarketIsLoading: true,
       };
+
+    case SET_AVATAR_CLASS:
+      return {
+        ...state,
+        market: [
+          ...state.market.map((person) => {
+            if (!action.payload.includes(person.name)) {
+              person.className = "avatar-transparent";
+            }
+
+            return person;
+          }),
+        ],
+      };
+
+    case CLEAR_AVATAR_CLASS:
+      return {
+        ...state,
+        market: [
+          ...state.market.map((person) => {
+            person.className = "";
+            return person;
+          }),
+        ],
+      };
     default:
       return state;
   }
@@ -84,6 +111,7 @@ const createMarket = (numPeople) => {
         match: null,
         matchMessage: "",
         proposals: [],
+        className: "",
       };
     }),
   ];

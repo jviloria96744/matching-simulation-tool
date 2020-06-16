@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import {
   Grid,
@@ -10,8 +10,13 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import MarriageContext from "../../../context/marriage/marriageContext";
+import "./StableMarriage.css";
 
 export const MarriageAvatar = ({ person, proposer }) => {
+  const marriageContext = useContext(MarriageContext);
+  const { setAvatarClass, clearAvatarClass } = marriageContext;
+
   return (
     <Slide direction="up" in>
       <Grid item xs={4} align="center">
@@ -36,6 +41,9 @@ export const MarriageAvatar = ({ person, proposer }) => {
               width: "10vw",
               backgroundColor: proposer ? "#3f50b5" : "#f50057",
             }}
+            className={person.className}
+            onMouseEnter={() => setAvatarClass(person.name, person.match)}
+            onMouseLeave={() => clearAvatarClass()}
           >
             {person.name}
           </Avatar>

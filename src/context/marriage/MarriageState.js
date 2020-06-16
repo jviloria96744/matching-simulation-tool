@@ -7,6 +7,8 @@ import {
   CREATE_PROPOSALS,
   ACCEPT_PROPOSALS,
   RESET_MARKET,
+  SET_AVATAR_CLASS,
+  CLEAR_AVATAR_CLASS,
 } from "../types";
 
 const MarriageState = (props) => {
@@ -57,6 +59,19 @@ const MarriageState = (props) => {
     });
   };
 
+  const setAvatarClass = (person, match) => {
+    dispatch({
+      type: SET_AVATAR_CLASS,
+      payload: [person, match],
+    });
+  };
+
+  const clearAvatarClass = () => {
+    dispatch({
+      type: CLEAR_AVATAR_CLASS,
+    });
+  };
+
   return (
     <MarriageContext.Provider
       value={{
@@ -70,6 +85,8 @@ const MarriageState = (props) => {
         createProposals,
         acceptProposals,
         resetMarket,
+        setAvatarClass,
+        clearAvatarClass,
       }}
     >
       {props.children}

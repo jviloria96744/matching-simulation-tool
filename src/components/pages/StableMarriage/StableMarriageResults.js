@@ -26,8 +26,6 @@ const StableMarriageResults = () => {
     }
   };
 
-  console.log(market);
-
   if (market === null && !isLoading) {
     return null;
   }
@@ -53,7 +51,7 @@ const StableMarriageResults = () => {
             variant="contained"
             style={{ backgroundColor: "lightgreen" }}
             onClick={() => handleStepClick()}
-            disable={isStable}
+            disabled={isStable}
           >
             {algoStage === "Proposal" ? "Make Proposals" : "Accept Proposals"}
           </Button>
