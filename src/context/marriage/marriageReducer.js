@@ -16,6 +16,7 @@ export default (state, action) => {
         ...state,
         market: [...createMarket(action.payload.numPeople)],
         marriageMarketIsLoading: false,
+        algoStep: 0,
         algoProposer: action.payload.proposer,
         isStable: false,
       };
@@ -150,7 +151,7 @@ const acceptProposals = (state) => {
   const { algoProposer, market } = state;
 
   const matches = market.map((person) => {
-    if (person.gender === algoProposer && person.match === null) {
+    if (person.gender === algoProposer) {
       const proposee =
         person.match === null ? person.proposals[0] : person.match;
       const potentialMatch = market.find(
@@ -194,15 +195,23 @@ const acceptProposals = (state) => {
 
 const isProposerMatch = (name, potentialMatch) => {
   const { proposals, preferences, match } = potentialMatch;
+  console.log(proposals);
+  console.log(preferences);
+  console.log(match);
 
   const myIndex = preferences.indexOf(name);
-  const suitorsIndex = proposals
-    .map((suitor) => preferences.indexOf(suitor))
-    .sort()[0];
+  const suitorsIndex =
+    proposals.length === 0
+      ? preferences.length
+      : proposals.map((suitor) => preferences.indexOf(suitor)).sort()[0];
   const matchIndex =
     preferences.indexOf(match) >= 0
       ? preferences.indexOf(match)
       : preferences.length;
+
+  console.log(myIndex);
+  console.log(suitorsIndex);
+  console.log(matchIndex);
 
   return myIndex === Math.min(myIndex, suitorsIndex, matchIndex);
 };
