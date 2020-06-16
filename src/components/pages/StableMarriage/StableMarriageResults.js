@@ -9,20 +9,24 @@ const StableMarriageResults = () => {
   const {
     market,
     isLoading,
-    algoState,
+    algoStage,
+    createProposals,
     algoStep,
     algoProposer,
-    updateMatches,
-    algoProposals,
+    acceptProposals,
+    resetMarket,
+    isStable,
   } = marriageContext;
 
-  console.log(algoProposals);
-
   const handleStepClick = () => {
-    updateMatches(algoStep, algoProposer);
+    if (algoStage === "Proposal") {
+      createProposals(algoStep);
+    } else if (algoStage === "Accept") {
+      acceptProposals();
+    }
   };
 
-  //console.log(market);
+  console.log(market);
 
   if (market === null && !isLoading) {
     return null;
@@ -38,6 +42,9 @@ const StableMarriageResults = () => {
     );
   }
 
+  const suitors = market.filter((person) => person.gender === algoProposer);
+  const suitees = market.filter((person) => person.gender !== algoProposer);
+
   return (
     <Fragment>
       <Grid container justify="center" style={{ marginTop: "3vh" }}>
@@ -46,30 +53,33 @@ const StableMarriageResults = () => {
             variant="contained"
             style={{ backgroundColor: "lightgreen" }}
             onClick={() => handleStepClick()}
+            disable={isStable}
           >
-            Step Through DA Algorithm
+            {algoStage === "Proposal" ? "Make Proposals" : "Accept Proposals"}
           </Button>
         </Grid>
         <Grid item xs={4}>
-          {algoState.length > 0 && (
-            <Alert severity="success">{algoState}</Alert>
+          {isStable && (
+            <Alert severity="success">We have a stable match!</Alert>
           )}
         </Grid>
         <Grid item xs={4}>
-          <Button variant="contained">Reset Market</Button>
+          <Button variant="contained" onClick={() => resetMarket()}>
+            Reset Market
+          </Button>
         </Grid>
       </Grid>
-      {market.men.map((man, i) => {
+      {suitors.map((proposer, i) => {
         return (
           <Grid
-            key={man.name}
+            key={proposer.name}
             container
             justify="space-between"
             spacing={1}
             style={{ marginTop: "3vh" }}
           >
-            <MarriageAvatar person={man} gender="male" />
-            <MarriageAvatar person={market.women[i]} gender="female" />
+            <MarriageAvatar person={proposer} proposer={true} />
+            <MarriageAvatar person={suitees[i]} proposer={false} />
           </Grid>
         );
       })}

@@ -4,18 +4,19 @@ import MarriageReducer from "./marriageReducer";
 import {
   CREATE_MARKET,
   SET_MARRIAGE_MARKET_IS_LOADING,
-  UPDATE_MATCHES,
+  CREATE_PROPOSALS,
+  ACCEPT_PROPOSALS,
+  RESET_MARKET,
 } from "../types";
 
 const MarriageState = (props) => {
   const initialState = {
     market: null,
     marriageMarketIsLoading: false,
-    algoState: "",
+    algoStage: "Proposal",
     algoStep: 0,
     algoProposer: null,
-    algoProposals: null,
-    availableSuitors: null,
+    isStable: null,
   };
 
   const [state, dispatch] = useReducer(MarriageReducer, initialState);
@@ -31,13 +32,16 @@ const MarriageState = (props) => {
     });
   };
 
-  const updateMatches = (step, proposer) => {
+  const createProposals = (step) => {
     dispatch({
-      type: UPDATE_MATCHES,
-      payload: {
-        step: step,
-        proposer: proposer,
-      },
+      type: CREATE_PROPOSALS,
+      payload: step,
+    });
+  };
+
+  const acceptProposals = () => {
+    dispatch({
+      type: ACCEPT_PROPOSALS,
     });
   };
 
@@ -47,17 +51,25 @@ const MarriageState = (props) => {
     });
   };
 
+  const resetMarket = () => {
+    dispatch({
+      type: RESET_MARKET,
+    });
+  };
+
   return (
     <MarriageContext.Provider
       value={{
         market: state.market,
         isLoading: state.marriageMarketIsLoading,
-        algoState: state.algoState,
+        algoStage: state.algoStage,
         algoStep: state.algoStep,
         algoProposer: state.algoProposer,
-        algoProposals: state.algoProposals,
+        isStable: state.isStable,
         createMarket,
-        updateMatches,
+        createProposals,
+        acceptProposals,
+        resetMarket,
       }}
     >
       {props.children}

@@ -12,7 +12,7 @@ import {
 import MarriageContext from "../../../context/marriage/marriageContext";
 
 const StableMarriageInputs = () => {
-  const [optimalSide, setOptimalSide] = useState("male");
+  const [optimalSide, setOptimalSide] = useState("men");
   const [marketSize, setMarketSize] = useState("4");
   const [commonValue, setCommonValue] = useState("0");
 
@@ -44,8 +44,8 @@ const StableMarriageInputs = () => {
               onChange={(e) => handleRadioChange(e)}
               row
             >
-              {radioInput("male", "Man Optimal")}
-              {radioInput("female", "Woman Optimal")}
+              {radioInput("men", "Man Optimal")}
+              {radioInput("women", "Woman Optimal")}
             </RadioGroup>
           </FormControl>
         </Grid>
