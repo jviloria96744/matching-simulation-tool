@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   Grid,
@@ -16,6 +16,16 @@ import "./StableMarriage.css";
 export const MarriageAvatar = ({ person, proposer }) => {
   const marriageContext = useContext(MarriageContext);
   const { setAvatarClass, clearAvatarClass } = marriageContext;
+
+  const preferenceString = (pref, i, prefLength, match, rejectedBy) => {
+    if (pref === match) {
+      return <strong>{i === prefLength - 1 ? `${pref}` : `${pref} > `}</strong>;
+    } else if (rejectedBy.includes(pref)) {
+      return <s>{i === prefLength - 1 ? `${pref}` : `${pref} > `}</s>;
+    }
+
+    return i === prefLength - 1 ? pref : `${pref} > `;
+  };
 
   return (
     <Slide direction="up" in>
@@ -53,11 +63,17 @@ export const MarriageAvatar = ({ person, proposer }) => {
           align="center"
           style={{ marginTop: "1.5vh" }}
         >
-          {person.preferences.map((pref) => {
-            return pref === person.match ? (
-              <strong>{pref}, </strong>
-            ) : (
-              `${pref}, `
+          {person.preferences.map((pref, i) => {
+            return (
+              <Fragment key={`${person.name}-${pref}`}>
+                {preferenceString(
+                  pref,
+                  i,
+                  person.preferences.length,
+                  person.match,
+                  person.rejectedBy
+                )}
+              </Fragment>
             );
           })}
         </Typography>

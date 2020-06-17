@@ -18,6 +18,8 @@ const StableMarriageResults = () => {
     isStable,
   } = marriageContext;
 
+  console.log(market);
+
   const handleStepClick = () => {
     if (algoStage === "Proposal") {
       createProposals(algoStep);

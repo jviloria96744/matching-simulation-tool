@@ -40,7 +40,13 @@ export default (state, action) => {
     case ACCEPT_PROPOSALS:
       let newMarket = acceptProposals(state);
       let isMarketStable =
-        newMarket.filter((person) => person.match === null).length === 0;
+        newMarket.filter(
+          (person) =>
+            person.gender === state.algoProposer &&
+            person.preferences.length > 0 &&
+            person.rejectedBy.length < person.preferences.length &&
+            person.match === null
+        ).length === 0;
       return {
         ...state,
         market: [...newMarket],
@@ -84,19 +90,32 @@ export default (state, action) => {
   }
 };
 
+const generatePreferences = (partners) => {
+  let cutOffSeed = 0.25 + Math.random() * 0.25;
+  let valuedPartners = partners.map((partner) => {
+    return {
+      partner,
+      value: cutOffSeed - Math.random(),
+    };
+  });
+  let filteredPartners = valuedPartners.filter((partner) => partner.value >= 0);
+  return filteredPartners.map((partner) => partner.partner);
+};
+
 const createMarket = (numPeople) => {
   const marketParticipants = getRandomNames(numPeople);
   let market = [];
   market = [
     ...marketParticipants.men.map((man) => {
-      let prefs = [...marketParticipants.women.sort(() => 0.5 - Math.random())];
       return {
         name: man,
         gender: "men",
-        preferences: prefs,
+        preferences: generatePreferences(marketParticipants.women),
         match: null,
         matchMessage: "",
         proposals: [],
+        rejectedBy: [],
+        className: "",
       };
     }),
   ];
@@ -104,14 +123,14 @@ const createMarket = (numPeople) => {
   market = [
     ...market,
     ...marketParticipants.women.map((woman) => {
-      let prefs = [...marketParticipants.men.sort(() => 0.5 - Math.random())];
       return {
         name: woman,
         gender: "women",
-        preferences: prefs,
+        preferences: generatePreferences(marketParticipants.men),
         match: null,
         matchMessage: "",
         proposals: [],
+        rejectedBy: [],
         className: "",
       };
     }),
@@ -123,11 +142,15 @@ const createMarket = (numPeople) => {
 const createProposals = (step, state) => {
   const { algoProposer, market } = state;
   const availableSuitors = market.filter(
-    (person) => person.gender === algoProposer && person.match === null
+    (person) =>
+      person.gender === algoProposer &&
+      person.preferences.length > 0 &&
+      person.rejectedBy.length < person.preferences.length &&
+      person.match === null
   );
 
   return market.map((person) => {
-    if (person.gender === algoProposer && person.match === null) {
+    if (availableSuitors.map((suitor) => suitor.name).includes(person.name)) {
       person.proposals.push(person.preferences[step]);
       person.matchMessage = `Made a proposal to ${person.preferences[step]}`;
     } else if (person.gender !== algoProposer) {
@@ -151,14 +174,21 @@ const acceptProposals = (state) => {
   const { algoProposer, market } = state;
 
   const matches = market.map((person) => {
-    if (person.gender === algoProposer) {
+    if (
+      person.gender === algoProposer &&
+      person.rejectedBy.length < person.preferences.length
+    ) {
       const proposee =
         person.match === null ? person.proposals[0] : person.match;
       const potentialMatch = market.find(
         (newPerson) => newPerson.name === proposee
       );
 
-      if (isProposerMatch(person.name, potentialMatch)) {
+      if (!potentialMatch.preferences.includes(person.name)) {
+        person.matchMessage = `${proposee} rejected my proposal`;
+        person.match = null;
+        person.rejectedBy.push(proposee);
+      } else if (isProposerMatch(person.name, potentialMatch)) {
         if (person.match === null) {
           person.match = person.proposals[0];
           person.matchMessage = `${person.proposals[0]} accepted my proposal`;
@@ -168,21 +198,35 @@ const acceptProposals = (state) => {
       } else {
         person.matchMessage = `${proposee} rejected my proposal`;
         person.match = null;
+        person.rejectedBy.push(proposee);
       }
     }
 
     if (person.gender !== algoProposer && person.proposals.length > 0) {
-      const newMatch = accepteeMatch(
-        person.match,
-        person.proposals,
-        person.preferences
-      );
-      if (person.match !== newMatch) {
-        person.matchMessage = `I accepted ${newMatch}'s proposal`;
+      if (!hasAcceptableMatches(person.preferences, person.proposals)) {
+        person.matchMessage = `I rejected all my proposals`;
       } else {
-        person.matchMessage = `I rejected my other proposals`;
+        const newMatch = accepteeMatch(
+          person.match,
+          person.proposals,
+          person.preferences
+        );
+        if (person.match !== newMatch) {
+          person.matchMessage = `I accepted ${newMatch}'s proposal`;
+        } else {
+          person.matchMessage = `I rejected my other proposals`;
+        }
+        person.rejectedBy = [
+          ...new Set([
+            ...person.rejectedBy,
+            ...person.proposals.filter(
+              (props) =>
+                props !== newMatch && person.preferences.includes(props)
+            ),
+          ]),
+        ];
+        person.match = newMatch;
       }
-      person.match = newMatch;
     }
     return person;
   });
@@ -195,31 +239,39 @@ const acceptProposals = (state) => {
 
 const isProposerMatch = (name, potentialMatch) => {
   const { proposals, preferences, match } = potentialMatch;
-  console.log(proposals);
-  console.log(preferences);
-  console.log(match);
 
   const myIndex = preferences.indexOf(name);
   const suitorsIndex =
     proposals.length === 0
       ? preferences.length
-      : proposals.map((suitor) => preferences.indexOf(suitor)).sort()[0];
+      : proposals
+          .map((suitor) => {
+            return preferences.indexOf(suitor) === -1
+              ? preferences.length
+              : preferences.indexOf(suitor);
+          })
+          .sort()[0];
   const matchIndex =
     preferences.indexOf(match) >= 0
       ? preferences.indexOf(match)
       : preferences.length;
 
-  console.log(myIndex);
-  console.log(suitorsIndex);
-  console.log(matchIndex);
-
   return myIndex === Math.min(myIndex, suitorsIndex, matchIndex);
+};
+
+const hasAcceptableMatches = (preferences, proposals) => {
+  return preferences.filter((value) => proposals.includes(value)).length > 0;
 };
 
 const accepteeMatch = (match, suitors, preferences) => {
   const suitorsIndex = suitors
-    .map((suitor) => preferences.indexOf(suitor))
+    .map((suitor) => {
+      return preferences.indexOf(suitor) === -1
+        ? preferences.length
+        : preferences.indexOf(suitor);
+    })
     .sort()[0];
+
   const matchIndex =
     preferences.indexOf(match) >= 0
       ? preferences.indexOf(match)
