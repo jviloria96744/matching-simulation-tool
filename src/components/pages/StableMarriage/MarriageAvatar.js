@@ -1,35 +1,18 @@
-import React, { Fragment, useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {
-  Grid,
-  Avatar,
-  Typography,
-  Badge,
-  Slide,
-  Zoom,
-} from "@material-ui/core";
+import { Avatar, Typography, Badge, Slide, Zoom } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import MarriageContext from "../../../context/marriage/marriageContext";
+//import MarriageContext from "../../../context/marriage/marriageContext";
 import "./StableMarriage.css";
 
 export const MarriageAvatar = ({ person, proposer }) => {
-  const marriageContext = useContext(MarriageContext);
-  const { setAvatarClass, clearAvatarClass } = marriageContext;
-
-  const preferenceString = (pref, i, prefLength, match, rejectedBy) => {
-    if (pref === match) {
-      return <strong>{i === prefLength - 1 ? `${pref}` : `${pref} > `}</strong>;
-    } else if (rejectedBy.includes(pref)) {
-      return <s>{i === prefLength - 1 ? `${pref}` : `${pref} > `}</s>;
-    }
-
-    return i === prefLength - 1 ? pref : `${pref} > `;
-  };
+  //const marriageContext = useContext(MarriageContext);
+  //const { setAvatarClass, clearAvatarClass } = marriageContext;
 
   return (
     <Slide direction="up" in>
-      <Grid item xs={4} align="center">
+      <div style={{ paddingTop: "1vh" }}>
         <Badge
           overlap="circle"
           anchorOrigin={{
@@ -52,8 +35,8 @@ export const MarriageAvatar = ({ person, proposer }) => {
               backgroundColor: proposer ? "#3f50b5" : "#f50057",
             }}
             className={person.className}
-            onMouseEnter={() => setAvatarClass(person.name, person.match)}
-            onMouseLeave={() => clearAvatarClass()}
+            //onMouseEnter={() => setAvatarClass(person.name, person.match)}
+            //onMouseLeave={() => clearAvatarClass()}
           >
             {person.name}
           </Avatar>
@@ -63,19 +46,7 @@ export const MarriageAvatar = ({ person, proposer }) => {
           align="center"
           style={{ marginTop: "1.5vh" }}
         >
-          {person.preferences.map((pref, i) => {
-            return (
-              <Fragment key={`${person.name}-${pref}`}>
-                {preferenceString(
-                  pref,
-                  i,
-                  person.preferences.length,
-                  person.match,
-                  person.rejectedBy
-                )}
-              </Fragment>
-            );
-          })}
+          {person.name}
         </Typography>
 
         {person.matchMessage.length > 0 && (
@@ -83,7 +54,7 @@ export const MarriageAvatar = ({ person, proposer }) => {
             <Alert severity="info">{person.matchMessage}</Alert>
           </Zoom>
         )}
-      </Grid>
+      </div>
     </Slide>
   );
 };

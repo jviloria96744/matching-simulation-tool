@@ -1,7 +1,6 @@
 import React, { Fragment, useContext } from "react";
 import { Grid, Button, CircularProgress } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
-import MarriageAvatar from "./MarriageAvatar";
+import Market from "./Market";
 import MarriageContext from "../../../context/marriage/marriageContext";
 
 const StableMarriageResults = () => {
@@ -12,7 +11,6 @@ const StableMarriageResults = () => {
     algoStage,
     createProposals,
     algoStep,
-    algoProposer,
     acceptProposals,
     resetMarket,
     isStable,
@@ -42,47 +40,38 @@ const StableMarriageResults = () => {
     );
   }
 
-  const suitors = market.filter((person) => person.gender === algoProposer);
-  const suitees = market.filter((person) => person.gender !== algoProposer);
-
   return (
     <Fragment>
-      <Grid container justify="center" style={{ marginTop: "3vh" }}>
-        <Grid item xs={4}>
-          <Button
-            variant="contained"
-            style={{ backgroundColor: "lightgreen" }}
-            onClick={() => handleStepClick()}
-            disabled={isStable}
-          >
-            {algoStage === "Proposal" ? "Make Proposals" : "Accept Proposals"}
-          </Button>
+      <Grid container style={{ marginTop: "3vh" }}>
+        <Grid item xs={8}>
+          <Market />
         </Grid>
-        <Grid item xs={4}>
-          {isStable && (
-            <Alert severity="success">We have a stable match!</Alert>
-          )}
-        </Grid>
-        <Grid item xs={4}>
-          <Button variant="contained" onClick={() => resetMarket()}>
-            Reset Market
-          </Button>
+        <Grid
+          item
+          xs={4}
+          style={{ boxShadow: "5px 5px 5px 5px", borderRadius: "5px" }}
+        >
+          <Grid container justify="space-around" style={{ marginTop: "3vh" }}>
+            <Grid item xs={4}>
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "lightgreen" }}
+                onClick={() => handleStepClick()}
+                disabled={isStable}
+              >
+                {algoStage === "Proposal"
+                  ? "Make Proposals"
+                  : "Accept Proposals"}
+              </Button>
+            </Grid>
+            <Grid item xs={4}>
+              <Button variant="contained" onClick={() => resetMarket()}>
+                Reset Market
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
-      {suitors.map((proposer, i) => {
-        return (
-          <Grid
-            key={proposer.name}
-            container
-            justify="space-between"
-            spacing={1}
-            style={{ marginTop: "3vh" }}
-          >
-            <MarriageAvatar person={proposer} proposer={true} />
-            <MarriageAvatar person={suitees[i]} proposer={false} />
-          </Grid>
-        );
-      })}
     </Fragment>
   );
 };
