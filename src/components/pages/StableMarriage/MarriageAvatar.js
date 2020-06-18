@@ -1,6 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, Typography, Badge, Slide, Zoom } from "@material-ui/core";
+import {
+  Avatar,
+  Typography,
+  Badge,
+  Slide,
+  Zoom,
+  Icon,
+} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 //import MarriageContext from "../../../context/marriage/marriageContext";
@@ -28,17 +35,25 @@ export const MarriageAvatar = ({ person, proposer }) => {
           }
         >
           <Avatar
-            variant="circle"
             style={{
-              height: "10vh",
-              width: "10vw",
+              height: "80px",
+              width: "80px",
               backgroundColor: proposer ? "#3f50b5" : "#f50057",
             }}
             className={person.className}
             //onMouseEnter={() => setAvatarClass(person.name, person.match)}
             //onMouseLeave={() => clearAvatarClass()}
           >
-            {person.name}
+            {/* {person.name} */}
+            <Icon
+              style={{ textAlign: "center", height: "60px", width: "60px" }}
+            >
+              <img
+                alt=""
+                src={person.avatarUrl}
+                style={{ height: "100%", width: "100%" }}
+              />
+            </Icon>
           </Avatar>
         </Badge>
         <Typography

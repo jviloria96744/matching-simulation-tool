@@ -7,7 +7,7 @@ import {
   SET_AVATAR_CLASS,
   CLEAR_AVATAR_CLASS,
 } from "../types";
-import { getRandomNames } from "../../utils/randomNames";
+import { simpleStableMarriage } from "../../utils/randomNames";
 
 export default (state, action) => {
   switch (action.type) {
@@ -90,32 +90,24 @@ export default (state, action) => {
   }
 };
 
-const generatePreferences = (partners) => {
-  let cutOffSeed = 0.25 + Math.random() * 0.25;
-  let valuedPartners = partners.map((partner) => {
-    return {
-      partner,
-      value: cutOffSeed - Math.random(),
-    };
-  });
-  let filteredPartners = valuedPartners.filter((partner) => partner.value >= 0);
-  return filteredPartners.map((partner) => partner.partner);
-};
-
 const createMarket = (numPeople) => {
-  const marketParticipants = getRandomNames(numPeople);
+  //const marketParticipants = getRandomNames(numPeople);
+  const marketParticipants = simpleStableMarriage;
   let market = [];
   market = [
     ...marketParticipants.men.map((man) => {
       return {
         name: man,
         gender: "men",
-        preferences: generatePreferences(marketParticipants.women),
+        preferences: [
+          ...marketParticipants.women.sort(() => 0.5 - Math.random()),
+        ],
         match: null,
         matchMessage: "",
         proposals: [],
         rejectedBy: [],
         className: "",
+        avatarUrl: marketParticipants.avatarUrl[man],
       };
     }),
   ];
@@ -126,12 +118,15 @@ const createMarket = (numPeople) => {
       return {
         name: woman,
         gender: "women",
-        preferences: generatePreferences(marketParticipants.men),
+        preferences: [
+          ...marketParticipants.men.sort(() => 0.5 - Math.random()),
+        ],
         match: null,
         matchMessage: "",
         proposals: [],
         rejectedBy: [],
         className: "",
+        avatarUrl: marketParticipants.avatarUrl[woman],
       };
     }),
   ];

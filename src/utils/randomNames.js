@@ -210,3 +210,26 @@ export const getRandomNames = (num) => {
     women: female.sort(() => 0.5 - Math.random()).slice(0, num),
   };
 };
+
+export const simpleStableMarriage = {
+  men: ["Andrew", "Brad", "Charlie", "David"],
+  women: ["Alice", "Bianca", "Caroline", "Diana"],
+  avatarUrl: {
+    Andrew:
+      "https://upload.wikimedia.org/wikipedia/commons/8/87/Emoji_u1f468_1f3fb.svg",
+    Brad:
+      "https://upload.wikimedia.org/wikipedia/commons/9/9b/Emoji_u1f468_1f3fd.svg",
+    Charlie:
+      "https://upload.wikimedia.org/wikipedia/commons/a/a2/Emoji_u1f468_1f3fc.svg",
+    David:
+      "https://upload.wikimedia.org/wikipedia/commons/1/1c/Emoji_u1f468_1f3fe.svg",
+    Alice:
+      "https://upload.wikimedia.org/wikipedia/commons/1/14/Emoji_u1f469_1f3fb.svg",
+    Bianca:
+      "https://upload.wikimedia.org/wikipedia/commons/3/34/Emoji_u1f469_1f3fc.svg",
+    Caroline:
+      "https://upload.wikimedia.org/wikipedia/commons/c/c1/Emoji_u1f469_1f3fd.svg",
+    Diana:
+      "https://upload.wikimedia.org/wikipedia/commons/6/60/Emoji_u1f469_1f3fe.svg",
+  },
+};
