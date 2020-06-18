@@ -4,6 +4,7 @@ import MarriageReducer from "./marriageReducer";
 import {
   CREATE_MARKET,
   SET_MARRIAGE_MARKET_IS_LOADING,
+  UPDATE_PREFERENCES,
   CREATE_PROPOSALS,
   ACCEPT_PROPOSALS,
   RESET_MARKET,
@@ -30,6 +31,16 @@ const MarriageState = (props) => {
       payload: {
         numPeople,
         proposer,
+      },
+    });
+  };
+
+  const updatePreferences = (person, newPrefs) => {
+    dispatch({
+      type: UPDATE_PREFERENCES,
+      payload: {
+        person,
+        newPrefs,
       },
     });
   };
@@ -82,6 +93,7 @@ const MarriageState = (props) => {
         algoProposer: state.algoProposer,
         isStable: state.isStable,
         createMarket,
+        updatePreferences,
         createProposals,
         acceptProposals,
         resetMarket,

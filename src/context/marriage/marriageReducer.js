@@ -1,5 +1,6 @@
 import {
   CREATE_MARKET,
+  UPDATE_PREFERENCES,
   SET_MARRIAGE_MARKET_IS_LOADING,
   CREATE_PROPOSALS,
   ACCEPT_PROPOSALS,
@@ -19,6 +20,21 @@ export default (state, action) => {
         algoStep: 0,
         algoProposer: action.payload.proposer,
         isStable: false,
+      };
+
+    case UPDATE_PREFERENCES:
+      return {
+        ...state,
+        market: state.market.map((person) => {
+          if (person.name === action.payload.person) {
+            return {
+              ...person,
+              preferences: action.payload.newPrefs,
+            };
+          }
+
+          return person;
+        }),
       };
 
     case RESET_MARKET:

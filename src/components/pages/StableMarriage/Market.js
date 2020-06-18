@@ -19,10 +19,32 @@ const getMarketCardStyle = () => ({
 
 const Market = () => {
   const marriageContext = useContext(MarriageContext);
-  const { market, algoProposer } = marriageContext;
+  const { market, algoProposer, updatePreferences } = marriageContext;
 
-  const onDragEnd = (result) => {
-    console.log(result);
+  const onDragEnd = ({ source, destination }) => {
+    //console.log(result);
+    //console.log(market);
+    if (!destination) {
+      return;
+    }
+
+    if (destination.droppableId !== source.droppableId) {
+      return;
+    }
+
+    if (destination.index === source.index) {
+      return;
+    }
+
+    const newPrefs = [
+      ...market.find((person) => person.name === destination.droppableId)
+        .preferences,
+    ];
+
+    newPrefs.splice(destination.index, 0, newPrefs.splice(source.index, 1)[0]);
+    //console.log(newPrefs);
+
+    updatePreferences(destination.droppableId, newPrefs);
   };
 
   const acceptableAvatars = (prefs, gender, personName) => {
