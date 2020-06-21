@@ -59,9 +59,7 @@ const StableMarriageResults = () => {
                 onClick={() => handleStepClick()}
                 disabled={isStable}
               >
-                {algoStage === "Proposal"
-                  ? "Make Proposals"
-                  : "Accept Proposals"}
+                Get Stable Matches
               </Button>
             </Grid>
             <Grid item xs={4}>

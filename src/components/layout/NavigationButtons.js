@@ -22,7 +22,7 @@ const NavigationButtons = () => {
         <HomeIcon color="error" fontSize="large" />
       </Link>
       <Button color="inherit" onClick={handleClick}>
-        Matching Problems
+        Matching Simulations
         <ExpandMoreIcon />
       </Button>
       <Menu
@@ -37,6 +37,24 @@ const NavigationButtons = () => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        <MenuItem>
+          <Link
+            to="/basic_simulations"
+            onClick={handleClose}
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            Basic Simulations
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <Link
+            to="/advanced_simulations"
+            onClick={handleClose}
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            Advanced Simulations
+          </Link>
+        </MenuItem>
         {MATCHING_PROBLEM_OBJECT.map((problem) => {
           return (
             <MenuItem key={problem.routeUrl}>
